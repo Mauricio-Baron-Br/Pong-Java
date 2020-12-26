@@ -10,7 +10,9 @@ import javax.swing.JPanel;
 
 public class Board extends JFrame {
 
-	Grafico gr;
+	private Grafico gr;
+	private int bx = 50, by = 50, velx=2, vely = 3;
+	private int px = 10, py = 100, iax = 750, iay = 100;  
 
 	class Grafico extends JPanel {
 		@Override
@@ -33,15 +35,15 @@ public class Board extends JFrame {
 			//play0
 			Graphics2D play0 = (Graphics2D) g;
 			play0.setColor(Color.WHITE);
-			play0.fill(new Rectangle2D.Double(40, 20, 20, 100));
+			play0.fill(new Rectangle2D.Double(40, py, 20, 100));
 			//play1
 			Graphics2D play1 = (Graphics2D) g;
 			play1.setColor(Color.WHITE);
-			play1.fill(new Rectangle2D.Double(720, 20, 20, 100));
+			play1.fill(new Rectangle2D.Double(720, iay, 20, 100));
 			//bolinha
 			Graphics2D boll = (Graphics2D) g;
 			boll.setColor(Color.WHITE);
-			boll.fill(new Rectangle2D.Double(20, 20, 15, 15));
+			boll.fill(new Rectangle2D.Double(bx, by, 15, 15));
 		}
 
 	}
