@@ -1,6 +1,7 @@
 package boardgame;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -16,10 +17,11 @@ import javax.swing.Timer;
 
 public class Board extends JFrame implements ActionListener {
 
+	private Font big = new Font("Digiface", Font.BOLD,70);
 	private Grafico gr;
 	private Timer time;
-	private int bx = 50, by = 50, velx = 4, vely = 3;
-	private int px = 10, py = 100, iax = 750, iay = 100;
+	private int bx = 50, by = 50, velx = 4, vely = 3, dir = 1;
+	private int px = 10, py = 100, iax = 750, iay = 100, play0Score = 0, play1Score = 0;
 
 	class Grafico extends JPanel {
 		@Override
@@ -51,6 +53,12 @@ public class Board extends JFrame implements ActionListener {
 			Graphics2D boll = (Graphics2D) g;
 			boll.setColor(Color.WHITE);
 			boll.fill(new Rectangle2D.Double(bx, by, 15, 15));
+			// Score
+			Graphics2D scor = (Graphics2D) g;
+			scor.setFont(big);
+			scor.setColor(Color.WHITE);
+			scor.drawString(play0Score + "   " + play1Score,310,100);
+				
 		}
 
 	}
@@ -77,7 +85,14 @@ public class Board extends JFrame implements ActionListener {
 			bx = 300;
 			velx = 3; //velocidade bolinha
 		}
+		
 		gr.repaint();
+		//melhora no movimento do jogador
+		if(dir == 1 && py > 40) {
+			py -= 3;
+		}else if(dir == 2 && py < 420) {
+			py +=3;
+		}
 		
 	}
 
@@ -91,17 +106,19 @@ public class Board extends JFrame implements ActionListener {
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
+				
 				if (arg0.getKeyCode() == 38 && py > 40) {
 					//altera velocidade do jogador
-					py -= 40;
+					dir = 1;
 				} else if (arg0.getKeyCode() == 40 && py < 420) {
-					py += 40;
+					dir = 2;
 				}
 
 			}
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
+				dir = 0;
 
 			}
 		});
