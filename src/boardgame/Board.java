@@ -24,7 +24,6 @@ public class Board extends JFrame implements ActionListener {
 	private URL Fora = Paint.class.getResource("util\\fora.wav");
 
 	private Font big = new Font("Arial", Font.BOLD, 70);
-	private Font vidas = new Font("Arial", Font.ITALIC, 0);
 	private Grafico gr;
 	private Timer time;
 	private int bx = 50, by = 50, velx = 3, vely = 3, dir = 1, vida = 5;
@@ -48,7 +47,7 @@ public class Board extends JFrame implements ActionListener {
 			Graphics2D boll = (Graphics2D) g;
 			Graphics2D scor = (Graphics2D) g;
 			scor.setFont(big);
-			
+
 			if (vida > 0) {
 				bar0.setColor(Color.WHITE);
 				bar1.setColor(Color.WHITE);
@@ -57,6 +56,7 @@ public class Board extends JFrame implements ActionListener {
 				play1.setColor(Color.WHITE);
 				boll.setColor(Color.WHITE);
 				scor.setColor(Color.WHITE);
+				scor.drawString(play0Score + "      " + play1Score, 310, 100);
 			} else {
 				py = by - 50;
 				scor.drawString("PONG  JAVA", 180, 220);
@@ -68,7 +68,7 @@ public class Board extends JFrame implements ActionListener {
 			play0.fill(new Rectangle2D.Double(40, py, 20, 100));
 			play1.fill(new Rectangle2D.Double(720, iay, 20, 100));
 			boll.fill(new Rectangle2D.Double(bx, by, 15, 15));
-			scor.drawString(play0Score + "      " + play1Score, 310, 100);
+			
 
 		}
 
@@ -92,13 +92,11 @@ public class Board extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		jogar();
 	}
-
-	@SuppressWarnings("deprecation")
-	private void jogar() {
+	public void jogar() {
 		bx += velx;
 		by += vely;
 
-		if (bx > 750) {
+		if (bx > 705) {
 			velx *= -1;
 			play1Score++;
 			pong.play();
@@ -128,15 +126,13 @@ public class Board extends JFrame implements ActionListener {
 			}
 
 		}
-
-		gr.repaint();
-		
 		// melhora no movimento do jogador
 		if (dir == 1 && py > 40) {
 			py -= 3;
 		} else if (dir == 2 && py < 420) {
 			py += 3;
 		}
+		gr.repaint();
 
 	}
 
@@ -155,7 +151,7 @@ public class Board extends JFrame implements ActionListener {
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				
+
 				if (arg0.getKeyCode() == 38 && py > 40) {
 					// altera velocidade do jogador
 					dir = 1;
