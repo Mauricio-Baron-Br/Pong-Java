@@ -6,32 +6,31 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Board extends JFrame implements ActionListener {
 
-	private URL UD = Paint.class.getResource("util\\upDow.wav");
-	private URL Pong = Paint.class.getResource("util\\ppong.wav");
-	private URL Fora = Paint.class.getResource("util\\fora.wav");
-
-	private Font big = new Font("Arial", Font.BOLD, 70);
 	private Grafico gr;
 	private Timer time;
 	private int bx = 50, by = 50, velx = 3, vely = 3, dir = 1, vida = 5;
 	private int px = 10, py = 100, iax = 750, iay = 100, play0Score = 0, play1Score = 0;
-
-	AudioClip ud = Applet.newAudioClip(UD);
-	AudioClip pong = Applet.newAudioClip(Pong);
-	AudioClip fora = Applet.newAudioClip(Fora);
 
 	class Grafico extends JPanel {
 		@Override
@@ -46,7 +45,8 @@ public class Board extends JFrame implements ActionListener {
 			Graphics2D play1 = (Graphics2D) g;
 			Graphics2D boll = (Graphics2D) g;
 			Graphics2D scor = (Graphics2D) g;
-			scor.setFont(big);
+			Graphics2D vidas = (Graphics2D) g;
+			scor.setFont( new Font("Serif", Font.BOLD, 15) );			
 
 			if (vida > 0) {
 				bar0.setColor(Color.WHITE);
@@ -56,10 +56,13 @@ public class Board extends JFrame implements ActionListener {
 				play1.setColor(Color.WHITE);
 				boll.setColor(Color.WHITE);
 				scor.setColor(Color.WHITE);
-				scor.drawString(play0Score + "      " + play1Score, 310, 100);
+				vidas.setColor(Color.WHITE);
+				scor.drawString(play0Score + "      " + play1Score, 383, 60);
+				vidas.drawString("vidas: " + vida , 50, 15);
 			} else {
 				py = by - 50;
 				scor.drawString("PONG  JAVA", 180, 220);
+				play('g');
 			}
 
 			bar0.fill(new Rectangle2D.Double(40, 20, 700, 20));
@@ -92,6 +95,7 @@ public class Board extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		jogar();
 	}
+
 	public void jogar() {
 		bx += velx;
 		by += vely;
@@ -99,24 +103,26 @@ public class Board extends JFrame implements ActionListener {
 		if (bx > 705) {
 			velx *= -1;
 			play1Score++;
-			pong.play();
+			play('p');
+
 		}
 		if (bx < 60 && bx > 50 && by > py && by < py + 100) {
 			velx *= -1;
 			play0Score++;
-			pong.play();
+			play('p');
+
 		}
 		if (by > 500 || by <= 40) {
 			vely *= -1;
-			ud.play();
+			play('u');
+
 		}
 		if (bx < -40) {
 			bx = 300;
 			velx = 3; // velocidade bolinha
-			fora.play();
 			vida--;
-
 		}
+		
 		if (bx > 400) {
 			if (by > iay + 50 && iay < 420) {
 				iay += 3;
@@ -134,6 +140,40 @@ public class Board extends JFrame implements ActionListener {
 		}
 		gr.repaint();
 
+	}
+
+	public void play(char i) {
+		ExecutaSom p = new ExecutaSom();
+		switch (i) {
+		case 'u':
+			// audio up
+			p.executaSom("util/upDow.wav");
+			break;
+		case 'p':
+			// audio pong
+			p.executaSom("util/pong.wav");
+			break;
+		case 'f':
+			// audio fora
+			p.executaSom("util/fora.wav");
+			break;
+		default:	
+		}
+	}
+
+	public class ExecutaSom {
+		public void executaSom(String caminho) {
+			try {
+				AudioInputStream audioInputStream = AudioSystem
+						.getAudioInputStream(new File(caminho).getAbsoluteFile());
+				Clip clip = AudioSystem.getClip();
+				clip.open(audioInputStream);
+				clip.start();
+			} catch (Exception ex) {
+				System.out.println("Erro ao executar SOM!");
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	public void control() {
